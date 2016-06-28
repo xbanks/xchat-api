@@ -10,7 +10,7 @@ CREATE TABLE IF NOT EXISTS groups (
   id        INTEGER   PRIMARY KEY AUTOINCREMENT ,
   name      TEXT      NOT NULL ,
   admin_id  INTEGER   DEFAULT NULL ,
-  private   INTEGER   DEFAULT 0,
+  privacy_level   INTEGER   DEFAULT 0,
   FOREIGN KEY (admin_id) REFERENCES users(id) ON DELETE SET DEFAULT
 );
 
@@ -28,7 +28,7 @@ CREATE TABLE IF NOT EXISTS messages (
   sender_id INTEGER   DEFAULT 0 ,
   group_id  INTEGER   NOT NULL ,
   content   TEXT      NOT NULL ,
-  time      DATETIME  NOT NULL ,
+  time      datetime  DEFAULT CURRENT_TIMESTAMP,
   FOREIGN KEY (sender_id) REFERENCES users(id) ON DELETE SET DEFAULT ,
   FOREIGN KEY (group_id)  REFERENCES groups(id) ON DELETE CASCADE
 );
@@ -42,14 +42,20 @@ END;
 
 CREATE TRIGGER message_to_group BEFORE INSERT
   ON messages
-  WHEN NOT exists(SELECT user_group.user_id FROM user_group WHERE new.sender_id = user_group.user_id AND new.group_id = user_group.group_id)
+  WHEN NOT exists(SELECT user_group.user_id
+                  FROM user_group
+                  WHERE new.sender_id = user_group.user_id AND
+                        new.group_id = user_group.group_id)
 BEGIN
     SELECT RAISE(ABORT, 'A user cannot send messages to a group they are not in');
 END;
 
 CREATE TRIGGER max_private_group BEFORE INSERT 
   ON user_group
-  WHEN (SELECT groups.private from groups WHERE groups.id = new.group_id) = 1 and (select count(*) from user_group where user_group.group_id = new.group_id ) = 2
+  WHEN (SELECT groups.private
+        FROM groups
+        WHERE groups.id = new.group_id) = 1 and
+       (SELECT COUNT(*) FROM user_group WHERE user_group.group_id = new.group_id ) > 1
 BEGIN
   SELECT raise(ABORT, 'There is a limit of 2 people in a private group.');
 END;

@@ -26,7 +26,7 @@ class MessageServiceTest extends TestKit(ActorSystem("message-service-test-syste
     val messageServiceTest = system.actorOf(Props[MessageService], "msg-service-test")
     "send a message within 2 second" in {
       within( 1.5 seconds ) {
-        val message = MessagesRow(None, Some(1), 2, "Hey Everyone, this is from a test", time = LocalDateTime.now().toString)
+        val message = MessagesRow(None, Some(1), 3, "Hey Everyone, this is from a test", time = Some(LocalDateTime.now().toString) )
         messageServiceTest ! Send( message )
         expectMsg( IRResponse(1) )
       }
