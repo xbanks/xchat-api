@@ -1,10 +1,10 @@
 package xchat.api.controllers
 
 import com.google.inject.Inject
-import com.twitter.finatra.http.Controller
 import com.twitter.bijection.Conversion._
 import com.twitter.bijection.twitter_util.UtilBijections.twitter2ScalaFuture
 import com.twitter.finagle.http.Request
+import com.twitter.finatra.http.Controller
 import com.twitter.util.{Future => TwitterFuture}
 import xchat.api.models.Domain.Group
 import xchat.api.models.generated.Tables.GroupsRow

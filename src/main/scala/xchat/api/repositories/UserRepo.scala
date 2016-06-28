@@ -1,7 +1,8 @@
 package xchat.api.repositories
 
-import xchat.api.models.generated.Tables
 import com.github.t3hnar.bcrypt._
+import xchat.api.models.generated.Tables
+
 import scala.concurrent.Future
 
 /** Created by xavier on 6/8/16.

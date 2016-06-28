@@ -3,7 +3,6 @@ package xchat.api.modules
 import com.google.inject.{Provides, Singleton}
 import com.twitter.inject.TwitterModule
 import xchat.api.repositories.MessageRepo
-import xchat.api.services._
 
 /**
   * Created by xavier on 6/18/16.

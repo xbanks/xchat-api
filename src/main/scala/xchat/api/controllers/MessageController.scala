@@ -1,20 +1,17 @@
 package xchat.api.controllers
 
-import java.time.LocalDateTime
 import javax.inject.Inject
 
-import com.twitter.finagle.http.Request
-import com.twitter.finatra.http.Controller
 import com.twitter.bijection.Conversion._
 import com.twitter.bijection.twitter_util.UtilBijections.twitter2ScalaFuture
-import com.twitter.util.{Await, Future => TwitterFuture}
+import com.twitter.finagle.http.Request
+import com.twitter.finatra.http.Controller
+import com.twitter.util.{Future => TwitterFuture}
 import xchat.api.models.Domain
 import xchat.api.models.generated.Tables.MessagesRow
-import xchat.api.models.generated._
 import xchat.api.repositories.MessageRepo
 
-import scala.concurrent.{Future, Await => SAwait}
-import scala.concurrent.duration._
+import scala.concurrent.{Await => SAwait}
 
 /**
   * Created by xavier on 6/18/16.
