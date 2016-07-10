@@ -1,11 +1,13 @@
 PRAGMA FOREIGN_KEYS = ON;
 
+-- Create the users table
 CREATE TABLE IF NOT EXISTS users (
   id      INTEGER PRIMARY KEY AUTOINCREMENT ,
   name    TEXT    NOT NULL ,
   passwd  TEXT    NOT NULL
 );
 
+-- Create the groups table
 CREATE TABLE IF NOT EXISTS groups (
   id        INTEGER   PRIMARY KEY AUTOINCREMENT ,
   name      TEXT      NOT NULL ,
@@ -14,6 +16,7 @@ CREATE TABLE IF NOT EXISTS groups (
   FOREIGN KEY (admin_id) REFERENCES users(id) ON DELETE SET DEFAULT
 );
 
+-- Create the user_group table
 CREATE TABLE IF NOT EXISTS user_group (
   id        INTEGER PRIMARY KEY ,
   user_id   INTEGER NOT NULL ,
@@ -23,6 +26,7 @@ CREATE TABLE IF NOT EXISTS user_group (
   UNIQUE (user_id, group_id)
 );
 
+-- Create the messages table
 CREATE TABLE IF NOT EXISTS messages (
   id        INTEGER   PRIMARY KEY AUTOINCREMENT ,
   sender_id INTEGER   DEFAULT 0 ,
@@ -33,6 +37,8 @@ CREATE TABLE IF NOT EXISTS messages (
   FOREIGN KEY (group_id)  REFERENCES groups(id) ON DELETE CASCADE
 );
 
+-- Make sure that if a group is created with an admin id, the admin is added to the group
+-- Maybe I should check to see if the user exists, and reject the group creation if not?
 CREATE TRIGGER add_admin_to_group AFTER INSERT
   ON groups
   WHEN new.admin_id IS NOT NULL
@@ -40,6 +46,7 @@ BEGIN
   INSERT INTO user_group (user_id, group_id) VALUES (new.admin_id, new.id);
 END;
 
+-- Make sure that the user is actually in the group they are trying to send the message to
 CREATE TRIGGER message_to_group BEFORE INSERT
   ON messages
   WHEN NOT exists(SELECT user_group.user_id
@@ -50,6 +57,7 @@ BEGIN
     SELECT RAISE(ABORT, 'A user cannot send messages to a group they are not in');
 END;
 
+-- Make sure that private groups (direct messages) only hold up to 2 users.
 CREATE TRIGGER max_private_group BEFORE INSERT 
   ON user_group
   WHEN (SELECT groups.private
