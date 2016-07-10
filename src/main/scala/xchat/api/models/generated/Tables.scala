@@ -58,17 +58,17 @@ trait Tables {
    *  @param groupId Database column group_id SqlType(INTEGER)
    *  @param content Database column content SqlType(TEXT)
    *  @param time Database column time SqlType(DATETIME) */
-  case class MessagesRow(id: Option[Int], senderId: Option[Int], groupId: Int, content: String, time: String)
+  case class MessagesRow(id: Option[Int], senderId: Option[Int], groupId: Int, content: String, time: Option[String])
   /** GetResult implicit for fetching MessagesRow objects using plain SQL queries */
-  implicit def GetResultMessagesRow(implicit e0: GR[Option[Int]], e1: GR[Int], e2: GR[String]): GR[MessagesRow] = GR{
+  implicit def GetResultMessagesRow(implicit e0: GR[Option[Int]], e1: GR[Int], e2: GR[String], e3: GR[Option[String]]): GR[MessagesRow] = GR{
     prs => import prs._
-    MessagesRow.tupled((<<?[Int], <<?[Int], <<[Int], <<[String], <<[String]))
+    MessagesRow.tupled((<<?[Int], <<?[Int], <<[Int], <<[String], <<?[String]))
   }
   /** Table description of table messages. Objects of this class serve as prototypes for rows in queries. */
   class Messages(_tableTag: Tag) extends Table[MessagesRow](_tableTag, "messages") {
     def * = (id, senderId, groupId, content, time) <> (MessagesRow.tupled, MessagesRow.unapply)
     /** Maps whole row to an option. Useful for outer joins. */
-    def ? = (id, senderId, Rep.Some(groupId), Rep.Some(content), Rep.Some(time)).shaped.<>({r=>import r._; _3.map(_=> MessagesRow.tupled((_1, _2, _3.get, _4.get, _5.get)))}, (_:Any) =>  throw new Exception("Inserting into ? projection not supported."))
+    def ? = (id, senderId, Rep.Some(groupId), Rep.Some(content), time).shaped.<>({r=>import r._; _3.map(_=> MessagesRow.tupled((_1, _2, _3.get, _4.get, _5)))}, (_:Any) =>  throw new Exception("Inserting into ? projection not supported."))
 
     /** Database column id SqlType(INTEGER), PrimaryKey */
     val id: Rep[Option[Int]] = column[Option[Int]]("id", O.PrimaryKey)
@@ -79,7 +79,7 @@ trait Tables {
     /** Database column content SqlType(TEXT) */
     val content: Rep[String] = column[String]("content")
     /** Database column time SqlType(DATETIME) */
-    val time: Rep[String] = column[String]("time")
+    val time: Rep[Option[String]] = column[Option[String]]("time")
 
     /** Foreign key referencing Groups (database name groups_FK_1) */
     lazy val groupsFk = foreignKey("groups_FK_1", Rep.Some(groupId), Groups)(r => r.id, onUpdate=ForeignKeyAction.NoAction, onDelete=ForeignKeyAction.Cascade)

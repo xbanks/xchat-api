@@ -9,6 +9,10 @@ lazy val mainProject = Project(
   base = file("."),
   settings = Defaults.coreDefaultSettings ++ Seq(
     scalaVersion := "2.11.8",
+    resolvers ++= Seq(
+      Resolver.sonatypeRepo("releases"),
+      "Twitter Maven" at "https://maven.twttr.com"
+    ),
     libraryDependencies ++= Seq(
       "org.scalatest"         %   "scalatest_2.11"      % "2.2.6" % "test",
       "com.typesafe.akka"     %%  "akka-actor"          % "2.4.6",
@@ -17,7 +21,13 @@ lazy val mainProject = Project(
       "com.typesafe.slick"    %%  "slick"               % "3.1.1",
       "com.typesafe.slick"    %%  "slick-codegen"       % "3.1.1",
       "org.slf4j"             %   "slf4j-nop"           % "1.6.4",
-      "org.xerial"            %   "sqlite-jdbc"         % "3.7.2"
+      "org.xerial"            %   "sqlite-jdbc"         % "3.7.2",
+      "com.twitter.finatra"   %%  "finatra-http"        % "2.1.6",
+      "com.twitter.finatra"   %%  "finatra-jackson"     % "2.1.6",
+      "com.twitter"           %%  "bijection-core"      % "0.9.2",
+      "com.twitter"           %%  "bijection-util"      % "0.9.2",
+      "com.github.t3hnar"     %% "scala-bcrypt"         % "2.6"
+
     ),
 
     slick <<= slickCodeGenTask//,

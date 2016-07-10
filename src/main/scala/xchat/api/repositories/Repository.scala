@@ -22,8 +22,18 @@ abstract class Repository[T <: AbstractTable[_]](cons: Tag => T) extends Databas
     */
   def findAll(): Future[Seq[T#TableElementType]] = db.run(table.result)
 
-  // TODO: Add code for retrieving ID after insert once the schema generation generates AutoInc keys
+  /** All repositories must have an insertion method
+    * @todo Add code for retrieving ID after insert once the schema generation generates AutoInc keys
+    * @param row
+    * @return
+    */
   def insert(row: T#TableElementType): Future[Int]
+
+  /** All repositories must have a removal method
+    *
+    * @param id
+    * @return
+    */
   def remove(id: Int): Future[Int]
 }
 
