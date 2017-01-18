@@ -2,6 +2,8 @@ XChat (xavier-chat)
 ===================
 _super unique and thoughtful name right?_
 
+**Frozen until I graduate and have time to continue...**
+
 This is the backend portion of a small messaging application that I'm putting together. This is more of a learning experience more than anything.
 
 ## My "Stack":
